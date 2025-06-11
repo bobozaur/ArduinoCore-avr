@@ -124,9 +124,8 @@ int main(void)
 	if (mcusr_state & (1<<EXTRF)) {
 		// External reset -  we should continue to self-programming mode.
 	} else if ((mcusr_state & (1<<PORF)) && (pgm_read_word(0) != 0xFFFF)) {		
-		// After a power-on reset skip the bootloader and jump straight to sketch 
-		// if one exists.	
-		StartSketch();
+		// After a power-on reset allow only a small amount to bootloader time.
+		Timeout = TIMEOUT_PERIOD / 4;
 	} else if ((mcusr_state & (1<<WDRF)) && (bootKeyPtrVal != bootKey) && (pgm_read_word(0) != 0xFFFF)) {	
 		// If it looks like an "accidental" watchdog reset then start the sketch.
 		StartSketch();
